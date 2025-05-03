@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Uf>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Professor>
  */
-class UfFactory extends Factory
+class ProfessorFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +17,8 @@ class UfFactory extends Factory
     public function definition(): array
     {
         return [
-            'nom'=> $this->faker->sentence(2), //nombre corto
-            'modul_id'=> \App\Models\Modul::factory(),
+            'nom' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
         ];
     }
 }
