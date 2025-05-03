@@ -9,4 +9,8 @@ class Professor extends Model
 {
     /** @use HasFactory<\Database\Factories\ProfessorFactory> */
     use HasFactory;
+
+    public function moduls() {
+        return $this->hasMany(Modul::class);
+    }
 }
