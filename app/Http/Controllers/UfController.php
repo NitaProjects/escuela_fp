@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUfRequest;
+use App\Http\Requests\UpdateUfRequest;
 use App\Models\Uf;
-use Illuminate\Http\Request;
 
 class UfController extends Controller
 {
@@ -12,14 +13,9 @@ class UfController extends Controller
         return Uf::with('modul')->get();
     }
 
-    public function store(Request $request)
+    public function store(StoreUfRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'modul_id' => 'required|exists:moduls,id',
-        ]);
-
-        $uf = Uf::create($validated);
+        $uf = Uf::create($request->validated());
         return response()->json($uf, 201);
     }
 
@@ -28,14 +24,9 @@ class UfController extends Controller
         return $uf->load('modul', 'alumnes');
     }
 
-    public function update(Request $request, Uf $uf)
+    public function update(UpdateUfRequest $request, Uf $uf)
     {
-        $validated = $request->validate([
-            'nom' => 'sometimes|required|string|max:255',
-            'modul_id' => 'sometimes|required|exists:moduls,id',
-        ]);
-
-        $uf->update($validated);
+        $uf->update($request->validated());
         return response()->json($uf);
     }
 

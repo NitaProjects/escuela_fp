@@ -2,42 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAvaluacioRequest;
+use App\Http\Requests\UpdateAvaluacioRequest;
 use App\Models\Avaluacio;
-use Illuminate\Http\Request;
 
 class AvaluacioController extends Controller
 {
     public function index()
     {
-        return Avaluacio::with('alumne', 'uf')->get();
+        return Avaluacio::with(['alumne', 'uf'])->get();
     }
 
-    public function store(Request $request)
+    public function store(StoreAvaluacioRequest $request)
     {
-        $validated = $request->validate([
-            'alumne_id' => 'required|exists:alumnes,id',
-            'uf_id' => 'required|exists:ufs,id',
-            'nota' => 'nullable|integer|min:0|max:100',
-        ]);
-
-        $avaluacio = Avaluacio::create($validated);
+        $avaluacio = Avaluacio::create($request->validated());
         return response()->json($avaluacio, 201);
     }
 
     public function show(Avaluacio $avaluacio)
     {
-        return $avaluacio->load('alumne', 'uf');
+        return $avaluacio->load(['alumne', 'uf']);
     }
 
-    public function update(Request $request, Avaluacio $avaluacio)
+    public function update(UpdateAvaluacioRequest $request, Avaluacio $avaluacio)
     {
-        $validated = $request->validate([
-            'alumne_id' => 'sometimes|required|exists:alumnes,id',
-            'uf_id' => 'sometimes|required|exists:ufs,id',
-            'nota' => 'nullable|integer|min:0|max:100',
-        ]);
-
-        $avaluacio->update($validated);
+        $avaluacio->update($request->validated());
         return response()->json($avaluacio);
     }
 

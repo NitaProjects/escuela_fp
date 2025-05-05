@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAlumneRequest;
+use App\Http\Requests\UpdateAlumneRequest;
 use App\Models\Alumne;
-use Illuminate\Http\Request;
 
 class AlumneController extends Controller
 {
@@ -12,14 +13,9 @@ class AlumneController extends Controller
         return Alumne::with('ufs')->get();
     }
 
-    public function store(Request $request)
+    public function store(StoreAlumneRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:alumnes,email',
-        ]);
-
-        $alumne = Alumne::create($validated);
+        $alumne = Alumne::create($request->validated());
         return response()->json($alumne, 201);
     }
 
@@ -28,14 +24,9 @@ class AlumneController extends Controller
         return $alumne->load('ufs');
     }
 
-    public function update(Request $request, Alumne $alumne)
+    public function update(UpdateAlumneRequest $request, Alumne $alumne)
     {
-        $validated = $request->validate([
-            'nom' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:alumnes,email,' . $alumne->id,
-        ]);
-
-        $alumne->update($validated);
+        $alumne->update($request->validated());
         return response()->json($alumne);
     }
 

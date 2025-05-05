@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProfessorRequest;
+use App\Http\Requests\UpdateProfessorRequest;
 use App\Models\Professor;
-use Illuminate\Http\Request;
 
 class ProfessorController extends Controller
 {
@@ -12,14 +13,9 @@ class ProfessorController extends Controller
         return Professor::with('moduls')->get();
     }
 
-    public function store(Request $request)
+    public function store(StoreProfessorRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:professors,email',
-        ]);
-
-        $professor = Professor::create($validated);
+        $professor = Professor::create($request->validated());
         return response()->json($professor, 201);
     }
 
@@ -28,14 +24,9 @@ class ProfessorController extends Controller
         return $professor->load('moduls');
     }
 
-    public function update(Request $request, Professor $professor)
+    public function update(UpdateProfessorRequest $request, Professor $professor)
     {
-        $validated = $request->validate([
-            'nom' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:professors,email,' . $professor->id,
-        ]);
-
-        $professor->update($validated);
+        $professor->update($request->validated());
         return response()->json($professor);
     }
 

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreModulRequest;
+use App\Http\Requests\UpdateModulRequest;
 use App\Models\Modul;
-use Illuminate\Http\Request;
 
 class ModulController extends Controller
 {
@@ -12,14 +13,9 @@ class ModulController extends Controller
         return Modul::with('ufs')->get();
     }
 
-    public function store(Request $request)
+    public function store(StoreModulRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'professor_id' => 'nullable|exists:professors,id',
-        ]);
-
-        $modul = Modul::create($validated);
+        $modul = Modul::create($request->validated());
         return response()->json($modul, 201);
     }
 
@@ -28,14 +24,9 @@ class ModulController extends Controller
         return $modul->load('ufs.alumnes');
     }
 
-    public function update(Request $request, Modul $modul)
+    public function update(UpdateModulRequest $request, Modul $modul)
     {
-        $validated = $request->validate([
-            'nom' => 'sometimes|required|string|max:255',
-            'professor_id' => 'nullable|exists:professors,id',
-        ]);
-
-        $modul->update($validated);
+        $modul->update($request->validated());
         return response()->json($modul);
     }
 
