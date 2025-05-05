@@ -16,7 +16,7 @@ class Avaluacio extends Model
     {
         return $this->belongsTo(Uf::class);
     }
-    // (podríamos tener belongsTo(Modul::class) a través de UF si se quisiera acceso rápido al módulo)
+    
     public function modul()
     {
         return $this->hasOneThrough(Modul::class, Uf::class, 'id', 'id', 'uf_id', 'modul_id');
