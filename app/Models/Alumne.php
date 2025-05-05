@@ -7,13 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Alumne extends Model
 {
-    /** @use HasFactory<\Database\Factories\AlumneFactory> */
     use HasFactory;
+
+    protected $fillable = ['nom', 'email'];
 
     public function avaluacions()
     {
         return $this->hasMany(Avaluacio::class, 'alumne_id');
     }
+
     public function ufs()
     {
         return $this->belongsToMany(Uf::class, 'avaluacions', 'alumne_id', 'uf_id')

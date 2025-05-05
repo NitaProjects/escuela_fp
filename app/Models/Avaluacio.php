@@ -8,15 +8,18 @@ class Avaluacio extends Model
 {
     protected $table = 'avaluacions';
 
+    protected $fillable = ['alumne_id', 'uf_id', 'nota'];
+
     public function alumne()
     {
         return $this->belongsTo(Alumne::class);
     }
+
     public function uf()
     {
         return $this->belongsTo(Uf::class);
     }
-    
+
     public function modul()
     {
         return $this->hasOneThrough(Modul::class, Uf::class, 'id', 'id', 'uf_id', 'modul_id');

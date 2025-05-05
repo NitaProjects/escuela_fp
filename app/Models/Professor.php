@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Professor extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProfessorFactory> */
     use HasFactory;
+
+    protected $fillable = ['nom', 'email'];
 
     public function moduls() {
         return $this->hasMany(Modul::class);
