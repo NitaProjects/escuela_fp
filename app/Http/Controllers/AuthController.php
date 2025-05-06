@@ -2,43 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $validated['password'] = Hash::make($validated['password']);
-        $user = User::create($validated);
-
+        $data = $request->validated();
+        $data['password'] = Hash::make($data['password']);
+        $user = User::create($data);
         $token = $user->createToken('api_token')->plainTextToken;
-
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $data = $request->validated();
+        $user = User::where('email', $data['email'])->first();
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
 
         $token = $user->createToken('api_token')->plainTextToken;
-
         return response()->json(['token' => $token, 'token_type' => 'Bearer']);
     }
 
