@@ -25,6 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/ping', function () {
     return response()->json([
         'status' => 'ok',
-        'message' => 'API Funciona y hace un deploy de asi de claro'
+        'message' => 'Ultima prueba antes de pasar al front'
     ]);
 });
