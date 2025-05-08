@@ -15,7 +15,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, xml, mysql
+          extensions: mbstring, xml, mysql 
 
       - name: 🚀 Desplegar a VPS via SSH
         uses: appleboy/ssh-action@master
@@ -26,6 +26,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /var/www/escuela-backend
+            git config --global --add safe.directory /var/www/escuela-backend
             git pull origin main
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force
