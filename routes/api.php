@@ -8,6 +8,7 @@ use App\Http\Controllers\AlumneController;
 use App\Http\Controllers\AvaluacioController;
 use App\Http\Controllers\AuthController;
 
+
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
@@ -19,4 +20,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('professors', ProfessorController::class);
     Route::apiResource('alumnes', AlumneController::class);
     Route::apiResource('avaluacions', AvaluacioController::class);
+});
+
+Route::get('/ping', function () {
+    return response()->json([
+        'status' => 'ok',
+        'message' => 'API funcionando correctamente'
+    ]);
 });
