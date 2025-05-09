@@ -14,10 +14,21 @@ class AuthController extends Controller
     {
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
+        $data['role'] = 'student';
+
         $user = User::create($data);
+
+        \App\Models\Alumne::create([
+            'nom' => $user->name,
+            'email' => $user->email,
+            'user_id' => $user->id,
+        ]);
+
         $token = $user->createToken('api_token')->plainTextToken;
+
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
+
 
     public function login(LoginRequest $request)
     {

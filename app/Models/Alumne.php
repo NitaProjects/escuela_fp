@@ -9,7 +9,7 @@ class Alumne extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nom', 'email'];
+    protected $fillable = ['nom', 'email', 'user_id'];
 
     public function avaluacions()
     {
@@ -21,5 +21,10 @@ class Alumne extends Model
         return $this->belongsToMany(Uf::class, 'avaluacions', 'alumne_id', 'uf_id')
             ->withPivot('nota')
             ->withTimestamps();
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

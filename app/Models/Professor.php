@@ -9,9 +9,15 @@ class Professor extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nom', 'email'];
+    protected $fillable = ['nom', 'email', 'user_id'];
 
-    public function moduls() {
+    public function moduls()
+    {
         return $this->hasMany(Modul::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
