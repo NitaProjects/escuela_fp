@@ -1,66 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📚 Proyecto Escuela FP - Backend API Laravel 11
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este proyecto es una **API RESTful** desarrollada con **Laravel 11** para la gestión de una escuela de Formación Profesional en informática. Permite administrar **módulos**, **unidades formativas**, **profesores**, **alumnos** y **evaluaciones**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Tecnologías utilizadas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Laravel 11 (PHP 8.2)
+- MySQL / MariaDB
+- Sanctum (Autenticación por token)
+- Postman (pruebas API)
+- PHPUnit (testing automático)
+- GitHub Actions (CI/CD)
+- VPS Debian 12 (Hetzner)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🧠 Estructura de modelos y relaciones
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Modul**: tiene muchos **Uf**, pertenece a un **Professor**
+- **Uf**: pertenece a un **Modul**, tiene muchos **Alumne** mediante **Avaluacio**
+- **Professor**: tiene muchos **Modul**
+- **Alumne**: tiene muchas **Uf** mediante **Avaluacio**
+- **Avaluacio**: pertenece a un **Alumne** y a una **Uf**, incluye `nota`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🔐 Autenticación API
 
-## Laravel Sponsors
+La autenticación se realiza mediante **Laravel Sanctum**.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Endpoints públicos:
 
-### Premium Partners
+| Método | URL           | Descripción        |
+|--------|---------------|--------------------|
+| POST   | /api/register | Registro de usuario |
+| POST   | /api/login    | Login y obtención de token |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Endpoints protegidos (requieren token):
 
-## Contributing
+| Método | URL                   | Descripción                         |
+|--------|------------------------|-------------------------------------|
+| POST   | /api/logout            | Cierra sesión (revoca token)        |
+| CRUD   | /api/moduls            | Gestión de módulos                  |
+| CRUD   | /api/ufs               | Gestión de unidades formativas      |
+| CRUD   | /api/professors        | Gestión de profesores               |
+| CRUD   | /api/alumnes           | Gestión de alumnos                  |
+| CRUD   | /api/avaluacions       | Gestión de evaluaciones             |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Envía el token en cada solicitud protegida:
 
-## Code of Conduct
+```
+Authorization: Bearer TOKEN
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🧪 Ejemplos de uso (Postman)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Registro
+```http
+POST /api/register
+{
+  "name": "Admin",
+  "email": "admin@example.com",
+  "password": "secret123",
+  "password_confirmation": "secret123"
+}
+```
 
-## License
+### Login
+```http
+POST /api/login
+{
+  "email": "admin@example.com",
+  "password": "secret123"
+}
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Obtener módulos (requiere token)
+```http
+GET /api/moduls
+Header: Authorization: Bearer TOKEN
+```
+
+### Crear módulo
+```http
+POST /api/moduls
+{
+  "nom": "Mòdul de Laravel",
+  "professor_id": 1
+}
+```
+
+---
+
+## 🧰 Instalación local
+
+```bash
+git clone https://github.com/tu_usuario/escuela-backend.git
+cd escuela-backend
+composer install
+cp .env.example .env
+# Configura DB en .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
+
+---
+
+## ✅ Testing con PHPUnit
+
+```bash
+php artisan test
+```
+
+Se testean endpoints protegidos, validaciones, autenticación, creación, actualización y borrado de recursos.
+
+---
+
+## 🚀 Despliegue en producción (CI/CD)
+
+### VPS recomendado
+- Hetzner (desde 4,5€/mes)
+- Debian 12 con PHP 8.2, MySQL, Apache/Nginx
+
+### Variables necesarias en GitHub:
+- `HOST`, `USERNAME`, `PORT`, `SSH_KEY`
+
+### Flujo:
+1. GitHub Actions ejecuta `composer install`, `php artisan migrate`
+2. Se conecta vía SSH al VPS y hace `git pull`
+3. Aplica cambios automáticamente en producción
+
+Archivo `.github/workflows/deploy.yml` incluido en el repositorio.
+
+---
+
+## 📎 Estructura del proyecto
+
+```
+app/
+  Models/ → Modul, Uf, Professor, Alumne, Avaluacio
+  Http/
+    Controllers/ → *Controller.php
+    Requests/ → *Request.php (validaciones)
+routes/
+  api.php → Rutas de la API
+database/
+  migrations/ → Migraciones de tablas
+  seeders/ → Seeders para datos de ejemplo
+  factories/ → Factories para testing y seed
+```
+
+---
+
+## 🎓 Exposición recomendada
+
+- Describir entidades y relaciones (apoyarse en diagrama ER)
+- Mostrar flujo de uso de la API (registro → login → CRUD)
+- Mostrar pruebas reales en Postman
+- Explicar cómo se despliega en producción con GitHub Actions
+- Resaltar buenas prácticas: RESTful, validación, autenticación, tests
+
+---
+
+## 🔗 Recursos
+
+- [Documentación Laravel](https://laravel.com/docs)
+- [Laravel Sanctum](https://laravel.com/docs/sanctum)
+- [Postman](https://www.postman.com/)
+- [Guía RESTful](https://restfulapi.net/)
+- [Hetzner Cloud](https://www.hetzner.com/cloud)
+
+---
+
+## 👨‍💻 Autor
+
+Daniel Nita – DAW 2 – Proyecto UF4 Laravel
